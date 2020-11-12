@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@spirit-fish/cli": "^0.0.5",
     "@spirit-fish/xhr-cache": "https://github.com/spirit-fish/xhr-cache",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
