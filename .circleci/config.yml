@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  deploy-production:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - run: REACT_APP_STAGE=production NODE_ENV=production CI="" yarn build
+      - run: npx spirit-fish deploy 9069e271-e69f-479c-b12a-44f0beb096fb ./build --activate --token $SPIRIT_FISH_TOKEN
+
+workflows:
+  version: 2
+  build-n-deploy:
+    jobs:
+      - deploy-production:
+          filters:
+            branches:
+              only: main

@@ -1,17 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import { hydrate, render } from 'react-dom';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import XhrCache from '@spirit-fish/xhr-cache';
 
-ReactDOM.render(
+XhrCache.setup({
+  shouldCache: () => {
+    return true;
+  },
+  shouldLog: () => {
+    return true;
+  },
+});
+
+const AppAsStrict = () => (
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const rootElement = document.getElementById('root');
+if (rootElement.hasChildNodes()) {
+  console.log("index.js - WILL HYDRATE");
+  hydrate(<AppAsStrict />, rootElement);
+} else {
+  console.log("index.js - WILL RENDER");
+  render(<AppAsStrict />, rootElement);
+}

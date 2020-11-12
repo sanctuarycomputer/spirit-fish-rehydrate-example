@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import XhrCache from '@spirit-fish/xhr-cache';
+
+const PIKACHU = `https://pokeapi.co/api/v2/pokemon/pikachu`;
 
 function App() {
+  // 1. Whenever initializing data, never assume it's not present.
+  const [data, setData] = useState(XhrCache.get(PIKACHU));
+
+  useEffect(() => {
+    // 2. Whenever fetching data, always check it's not already fetched.
+    if (!!data) return;
+
+    (async () => {
+      const response = await fetch(PIKACHU);
+      setData(await response.json());
+    })();
+  }, [data]);
+
+  console.log("App.js - WILL RENDER");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!!data ? (<h1>App is Ready</h1>) : (<h1>App is Loading</h1>)}
     </div>
   );
 }
